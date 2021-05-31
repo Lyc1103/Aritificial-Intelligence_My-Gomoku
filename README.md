@@ -4,7 +4,7 @@
 > Date : 2021 / 5 / 31<br>
 > List :
 >
-> > <a href = "#gamescreen">Game Screen</a><br> > > <a href = "#description">Description</a><br> > > <a href = "#exercise">Exercise Essentials</a><br> > > <a href = "#execute">How to Execute</a><br> > > <a href = "#reference">Reference</a>
+> > <a href = "#gamescreen">Game Screen</a><br><a href = "#description">Description</a><br><a href = "#exercise">Exercise Essentials</a><br><a href = "#execute">How to Execute</a><br><a href = "#reference">Reference</a>
 
 ---
 
