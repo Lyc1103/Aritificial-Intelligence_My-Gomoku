@@ -1,5 +1,5 @@
 import sys
-from MyGomoku import MyGo
+from MyGomoku import *
 from MyAI import myAI
 import numpy as np
 import platform
@@ -20,7 +20,7 @@ if __name__ == "__main__":
         while True:
             newGame = False
             block_num = 19
-            game = MyGo(block_num)
+            game = MyGomoku(block_num)
             game.title("PlayGo")
             game.mainloop()
             if newGame:

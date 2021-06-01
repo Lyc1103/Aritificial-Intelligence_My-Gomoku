@@ -38,7 +38,7 @@ active_fg = "white"
 font_style = "Helvetica"
 
 
-class MyGo(Tk):
+class MyGomoku(Tk):
     def __init__(self, my_block_num=19):
         Tk.__init__(self)
         self.sys = sysstr
