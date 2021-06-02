@@ -1,5 +1,12 @@
+from typing import get_origin
 from numpy import *
 from Graph import *
+
+black_player = 1
+white_player = 2
+reverse_present = zeros(3)
+reverse_present[2] = 1
+reverse_present[1] = 2
 
 
 def myAI(gomoku):
@@ -185,8 +192,21 @@ def myAI(gomoku):
                     y = tmp_y
                     decision = 1
 
+        score_list = []
         for m in range(1, gomoku.block_num + 1):
             for n in range(1, gomoku.block_num + 1):
+                # if gomoku.positions[m][n] == 0:
+                #     gomoku.positions[m][n] = gomoku.present + 1
+                #     score_next = GetScore(gomoku, n, m, gomoku.present)
+                #     gomoku.positions[m][n] = reverse_present[gomoku.present + 1]
+                #     score_enemy = GetScore(
+                #         gomoku, n, m, reverse_present[gomoku.present]
+                #     )
+                #     score_list.append(
+                #         [score_next, score_enemy, score_next - score_enemy, n, m]
+                #     )
+                #     gomoku.positions[m][n] = 0
+
                 v = gomoku.graph.get_vertex(str(n) + "_" + str(m))
                 tmp_v = gomoku.graph.get_vertex(str(n) + "_" + str(m))
 
@@ -201,7 +221,21 @@ def myAI(gomoku):
                     x = tmp_x
                     y = tmp_y
                     decision = 1
-                    break
+
+        # score_enemy_list = sorted(
+        #     score_list, key=lambda tm: (tm[0], tm[1]), reverse=True
+        # )
+        # score_self_list = sorted(
+        #     score_list, key=lambda tm: (tm[1], tm[0]), reverse=True
+        # )
+        # if score_enemy_list[0][0] >= score_self_list[0][1]:
+        #     x = score_enemy_list[0][3]
+        #     y = score_enemy_list[0][4]
+        #     decision = 1
+        # else:
+        #     x = score_self_list[0][3]
+        #     y = score_self_list[0][4]
+        #     decision = 1
 
         v_id = ""
         if gomoku.present == 0:
@@ -956,9 +990,7 @@ def CheckTriple_OneLive(v, tmp_v, gomoku):
 
 
 def CheckTriple_TwoLive(v, tmp_v, gomoku):
-    reverse_present = zeros(3)
-    reverse_present[2] = 1
-    reverse_present[1] = 2
+
     x = 0
     y = 0
     if v.BorW == reverse_present[gomoku.present + 1]:
@@ -1063,3 +1095,78 @@ def CheckTriple_TwoLive(v, tmp_v, gomoku):
                         y = int(tmp_id[1])
 
     return [x, y]
+
+
+chess_important = 3
+
+
+def GetScore(gomoku, x, y, player):
+    start_i = max(x - 5, 1)
+    end_i = min(x + 5, 19)
+    start_j = max(y - 5, 1)
+    end_j = min(y + 5, 19)
+    max_count = 0
+    sum_combo = 0
+
+    # row
+    count1, combo1 = GetCountCombo(
+        player, [gomoku.positions[y][i] for i in range(x, start_i, -1)]
+    )
+    count2, combo2 = GetCountCombo(
+        player, [gomoku.positions[y][i] for i in range(x, end_i)]
+    )
+    max_count = max(max_count, count1 + count2 - chess_important * 2)
+    sum_combo += combo1 + combo2 - 2
+
+    # cloumn
+    count1, combo1 = GetCountCombo(
+        player, [gomoku.positions[i][x] for i in range(y, start_j, -1)]
+    )
+    count2, combo2 = GetCountCombo(
+        player, [gomoku.positions[i][x] for i in range(y, end_j)]
+    )
+    max_count = max(max_count, count1 + count2 - chess_important * 2)
+    sum_combo += combo1 + combo2 - 2
+
+    # EN - WS
+    start_EN_WS = min(end_j - y, x - start_i)
+    end_EN_WS = min(end_i - x, y - start_j)
+    count1, combo1 = GetCountCombo(
+        player, [gomoku.positions[y + i][x - i] for i in range(start_EN_WS)]
+    )
+    count2, combo2 = GetCountCombo(
+        player, [gomoku.positions[y - i][x + i] for i in range(end_EN_WS)]
+    )
+    max_count = max(max_count, count1 + count2 - chess_important * 2)
+    sum_combo += combo1 + combo2 - 2
+
+    # ES - WN
+    start_ES_WN = min(y - start_j, x - start_i)
+    end_ES_WN = min(end_i - x, end_j - y)
+    count1, combo1 = GetCountCombo(
+        player, [gomoku.positions[y - i][x - i] for i in range(start_ES_WN)]
+    )
+    count2, combo2 = GetCountCombo(
+        player, [gomoku.positions[y + i][x + i] for i in range(end_ES_WN)]
+    )
+    max_count = max(max_count, count1 + count2 - chess_important * 2)
+    sum_combo += combo1 + combo2 - 2
+
+    score = max_count * 20 + sum_combo * 10
+    return score
+
+
+def GetCountCombo(player, list):
+    count = 0
+    combo = 0
+    combo_count = True
+    for item in list:
+        if item == player:
+            count += chess_important
+            if combo_count:
+                combo += 1
+        elif item == 0:
+            combo_count = False
+        else:
+            break
+    return count, combo

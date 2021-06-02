@@ -25,7 +25,7 @@ taichi_b_calibration = 11
 plate_edge_x = 165
 plate_edge_y = 33.77777777777777
 player = ["Black", "White"]
-loop_times = 10
+loop_times = 1
 
 # colors
 board_bg = "gray10"
@@ -838,15 +838,15 @@ class MyGomoku(Tk):
                         self.graph.add_to_white_path(
                             str(self.AIx) + "_" + str(self.AIy)
                         )
-                    # print(
-                    #     "AI "
-                    #     + player[self.present]
-                    #     + " got position (x, y) = ("
-                    #     + _text_[self.AIx - 1]
-                    #     + ", "
-                    #     + str(self.AIy)
-                    #     + ")"
-                    # )
+                    print(
+                        "AI "
+                        + player[self.present]
+                        + " got position (x, y) = ("
+                        + _text_[self.AIx - 1]
+                        + ", "
+                        + str(self.AIy)
+                        + ")"
+                    )
                     self.present = (self.present + 1) % 2
                     if (gg == 1) or (gg == -1):
                         return gg
